@@ -1,0 +1,9 @@
+*.dll
+*.ncrunchproject
+*.manifest
+packages/
+WebContentReader/obj/
+WebContentReader/bin
+AsyncAwait/obj/
+AsyncAwait/bin/
+AsyncAwait.v2.ncrunchsolution
