@@ -1,6 +1,9 @@
 *.dll
 *.ncrunchproject
 *.manifest
+.vs/
+AsyncAwait.ncrunchsolution.user
+_NCrunch_AsyncAwait/
 packages/
 WebContentReader/obj/
 WebContentReader/bin
