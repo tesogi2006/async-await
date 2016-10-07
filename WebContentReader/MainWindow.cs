@@ -17,6 +17,8 @@ namespace WebContentReader
     {
         private readonly WebClient _wc = new WebClient();
         private ContentParser _parser;
+        private GoogleNewsDownloader _downloader = new GoogleNewsDownloader();
+
         private string theEbook;
         public MainWindow()
         {
@@ -33,14 +35,15 @@ namespace WebContentReader
 
         private async void btnDownload_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(urlInput.Text))
+            List<NewsItems> news = _downloader.GetNews(urlInput.Text.ToString());
+            foreach (var newsItem in news)
             {
-                urlInput.Text = "http://www.cnn.com";
+                txtBook.Text += newsItem.Title + "\r\n" + newsItem.Description + "\r\n\r\n";
             }
 
-            _wc.DownloadProgressChanged += DownloadProgressChanged;
-            _wc.DownloadStringCompleted += StringDownloaded;
-            _wc.DownloadStringAsync(new Uri(urlInput.Text.ToString()));
+            //_wc.DownloadProgressChanged += DownloadProgressChanged;
+            //_wc.DownloadStringCompleted += StringDownloaded;
+            //_wc.DownloadStringAsync(new Uri(urlInput.Text.ToString()));
         }
 
         private void StringDownloaded(object sender, DownloadStringCompletedEventArgs e)
@@ -50,7 +53,7 @@ namespace WebContentReader
             _parser = new ContentParser(theEbook);
 
 
-            var xpath = "//*[self::h1 or self::h2 or self::h3 or self::h4]";
+            var xpath = "//*[self::h2]";
             var tmp = _parser.GetContents(xpath);
 
             foreach (var htmlNode in tmp)
@@ -66,7 +69,7 @@ namespace WebContentReader
 
             double percentage = bytesIn/totalBytes*100;
 
-            progressBar.Value = int.Parse(Math.Truncate(percentage).ToString());
+            //progressBar.Value = int.Parse(Math.Truncate(percentage).ToString());
         }
         
         private async void btnGetStats_Click(object sender, EventArgs e)
@@ -90,7 +93,7 @@ namespace WebContentReader
             bookStats.AppendFormat("\r\nLongest word is: {0}", longestWord);
             bookStats.AppendLine();
             
-            MessageBox.Show(bookStats.ToString(), "Ten most common words");
+            MessageBox.Show(bookStats.ToString(), @"Ten most common words");
         }
 
         private async Task<string> FindLongestWord(string[] words)
